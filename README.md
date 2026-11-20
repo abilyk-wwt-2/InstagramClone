@@ -42,6 +42,9 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#firebase-configuration">Firebase configuration</a></li>
+        <li><a href="#running-the-frontend">Running the frontend</a></li>
+        <li><a href="#running-the-admin-panel">Running the admin panel</a></li>
       </ul>
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
@@ -75,12 +78,51 @@ You can follow the youtube series in the following [link](https://www.youtube.co
   - [React Native](https://reactnative.dev/)
   - [Expo](https://expo.dev/)
   - [Firebase](https://firebase.google.com/)
+  - [Node.js](https://nodejs.org/) and npm
 
 <!-- GETTING STARTED -->
 
 - ### **Installation**
 
   In order to deploy the project you'll need to follow the [wiki page](https://github.com/SimCoderYoutube/InstagramClone/wiki/Setup-your-project) dedicated to this effect.
+
+  The repository is split into `frontend/` (Expo mobile app), `admin/` (React admin panel) and `backend/functions/` (Firebase Cloud Functions). Install dependencies separately in each app you want to run:
+
+  ```bash
+  cd frontend && npm install
+  cd ../admin && npm install
+  ```
+
+- ### **Firebase configuration**
+
+  Create a Firebase project with Authentication, Firestore and Storage enabled, add a Web app, and copy its config from the Firebase console. The repository ships `"****"` placeholders, so the apps will not work until you replace them. Do not commit real keys.
+
+  - **Frontend:** the config is inlined as the `firebaseConfig` object in `frontend/App.js` (`apiKey`, `authDomain`, `databaseURL`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`, `measurementId`).
+  - **Frontend native builds:** `frontend/app.json` also has `"****"` placeholders (Google Sign-In API key, iOS client id, Maps key) and refers to `./google-services.json` (Android) and `./GoogleService-Info.plist` (iOS). Those two files are not in the repo; download them from the Firebase console into `frontend/` if you build native apps.
+  - **Admin panel:** the same object lives in `admin/src/config/config.js` and is loaded by `admin/src/index.js`.
+  - **Security rules:** `firestore_rules.txt` and `storage_rules.txt` in the repo root are copies to paste into the Firebase console (Firestore Database → Rules, Storage → Rules).
+  - **Cloud Functions:** `backend/functions/index.js` holds the Firestore triggers (likes, followers, comments). It has no `package.json` or deploy config; it needs `firebase-functions` and `firebase-admin` and must be deployed with the Firebase CLI.
+
+- ### **Running the frontend**
+
+  ```bash
+  cd frontend
+  npm start          # expo start; scan the QR code with Expo Go
+  npm run android    # expo start --android
+  npm run ios        # expo start --ios
+  npm run web        # expo start --web
+  ```
+
+  The frontend has no build, lint or test scripts.
+
+- ### **Running the admin panel**
+
+  ```bash
+  cd admin
+  npm start          # http://localhost:3000
+  npm run build      # production build in admin/build
+  npm test           # react-scripts test (watch mode)
+  ```
 
 ## 🚧 Roadmap
 
