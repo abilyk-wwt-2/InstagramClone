@@ -14,12 +14,8 @@ export default function Register(props) {
     const [isValid, setIsValid] = useState(true);
 
     const onRegister = () => {
-        if (name.lenght == 0 || username.lenght == 0 || email.length == 0 || password.length == 0) {
+        if (name.length == 0 || username.length == 0 || email.length == 0 || password.length == 0) {
             setIsValid({ bool: true, boolSnack: true, message: "Please fill out everything" })
-            return;
-        }
-        if (password.length < 6) {
-            setIsValid({ bool: true, boolSnack: true, message: "passwords must be at least 6 characters" })
             return;
         }
         if (password.length < 6) {
@@ -32,12 +28,9 @@ export default function Register(props) {
             .get()
             .then((snapshot) => {
 
-                if (!snapshot.exist) {
+                if (snapshot.empty) {
                     firebase.auth().createUserWithEmailAndPassword(email, password)
                         .then(() => {
-                            if (snapshot.exist) {
-                                return
-                            }
                             firebase.firestore().collection("users")
                                 .doc(firebase.auth().currentUser.uid)
                                 .set({
@@ -53,6 +46,8 @@ export default function Register(props) {
                         .catch(() => {
                             setIsValid({ bool: true, boolSnack: true, message: "Something went wrong" })
                         })
+                } else {
+                    setIsValid({ bool: true, boolSnack: true, message: "Username already taken" })
                 }
             }).catch(() => {
                 setIsValid({ bool: true, boolSnack: true, message: "Something went wrong" })
